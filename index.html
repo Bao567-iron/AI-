@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
+    <title>专属于你的英语小助手 · AI Integrity Guard</title>
+    <link rel="stylesheet" href="网页样式style.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.js"></script>
+    
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">📘</div>
+            <div>专属于你的<span style="color:var(--primary);">英语小助手</span></div>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-outline btn-sm" onclick="openGuide()">📖 AI学习指南</button>
+            <button class="btn btn-outline btn-sm" onclick="openTranslateModal()">🌐 英→中</button>
+            <button class="btn btn-outline btn-sm" onclick="showQRModal()">📱 二维码</button>
+            <button class="btn btn-primary" id="btnDetect" onclick="runDetection()">🔍 开始检测</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="panel input-panel">
+            <div style="font-weight:700; margin-bottom:10px;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--primary);margin-right:6px;"></span>
+                英文文本输入
+            </div>
+            <textarea id="inputText" placeholder="在此粘贴英文写作内容..."></textarea>
+            <div class="textarea-footer">
+                <span id="charCount">词数: 0 | 字符: 0</span>
+                <div style="display:flex; gap:6px;">
+                    <button class="btn btn-outline btn-sm" onclick="loadExample()">📝 示例</button>
+                    <button class="btn btn-outline btn-sm" onclick="pasteFromClipboard()">📋 粘贴</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div style="font-weight:700; margin-bottom:10px;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);margin-right:6px;"></span>
+                检测结果
+            </div>
+            <div class="result-empty" id="resultEmpty">🔬 等待检测...</div>
+            <div class="result-content" id="resultContent"></div>
+        </div>
+
+        <div class="panel">
+            <div style="font-weight:700; margin-bottom:10px;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warning);margin-right:6px;"></span>
+                写作思路引导
+            </div>
+            <div class="result-empty" id="guidanceEmpty">💡 尚未生成引导</div>
+            <ul class="guidance-list" id="guidanceList"></ul>
+        </div>
+    </div>
+
+    <!-- 翻译弹窗 -->
+    <div class="overlay" id="translateOverlay" onclick="if(event.target===this) this.classList.remove('active')">
+        <div class="overlay-card">
+            <button class="overlay-close" onclick="document.getElementById('translateOverlay').classList.remove('active')">✕</button>
+            <h2 style="margin-bottom:12px;">🌐 英文 → 中文 翻译</h2>
+            <div id="translateResult" style="min-height:120px; background:#F8FAFC; border-radius:12px; padding:16px; color:#334155;">
+                输入英文后点击按钮。
+            </div>
+            <button class="btn btn-primary" style="margin-top:12px; width:100%;" onclick="performTranslation()">🔄 开始翻译</button>
+        </div>
+    </div>
+
+    <!-- AI学习指南弹窗（精简保留） -->
+    <div class="overlay" id="guideOverlay" onclick="if(event.target===this) this.classList.remove('active')">
+        <div class="overlay-card" style="max-width:800px;">
+            <button class="overlay-close" onclick="document.getElementById('guideOverlay').classList.remove('active')">✕</button>
+            <h2 style="margin-bottom:16px; color:var(--primary);">📘 如何用AI学好英语 · 合规使用指南</h2>
+            <p>基于中北大学调研报告：AI应作为辅助工具，直接复制内容属于学术不端。</p>
+        </div>
+    </div>
+
+    <!-- 二维码弹窗 -->
+    <div class="overlay" id="qrOverlay" onclick="if(event.target===this) this.classList.remove('active')">
+        <div class="overlay-card" style="max-width:420px;">
+            <button class="overlay-close" onclick="document.getElementById('qrOverlay').classList.remove('active')">✕</button>
+            <h3 style="text-align:center;">📱 移动端访问二维码</h3>
+            <div id="qrContainer" style="display:flex; justify-content:center; margin:16px 0;"></div>
+            <input type="text" id="customUrl" placeholder="输入部署后的网址" style="width:100%; padding:10px; border:2px solid var(--border); border-radius:8px; margin-bottom:8px;">
+            <button class="btn btn-primary btn-sm" onclick="updateQRCode()" style="width:100%;">更新二维码</button>
+            <p style="font-size:0.75rem; color:#EF4444; margin-top:8px;">⚠️ 本地文件无法扫码，请部署后使用。</p>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+   
+    <script src="script.js"></script>
+</body>
+</html>
